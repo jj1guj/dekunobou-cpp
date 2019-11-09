@@ -1,2 +1,2 @@
-# dekunobou-cpp
+# でくの坊 C++版
  
