@@ -41,8 +41,8 @@ bool compare(vector<int>a,vector<int>b);
 bool search_element(vector<int> list,int element);
 vector<vector<int>> append(vector<vector<int>> list);
 
-//hantei5.cpp
-vector<int> hantei5(vector<vector<int>> row,vector<vector<int>> basyo,int soutesu,int sente,int add1,int add2);
+//hantei.cpp
+vector<int> hantei(vector<vector<int>> row,vector<vector<int>> basyo,int soutesu,int sente,int add1,int add2);
 
 
 //others.cpp

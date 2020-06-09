@@ -81,9 +81,9 @@ int main(int argv,char **argc){
             }else{
                 change_kaisu=0;
                 if(teban==sente){
-                    utu=hantei5(row,basyo,soutesu,sente,73,27);
+                    utu=hantei(row,basyo,soutesu,sente,73,27);
                 }else{
-                    utu=hantei5(row,basyo,soutesu,sente,100,10);
+                    utu=hantei(row,basyo,soutesu,sente,100,10);
                 }
                 cout<<"["<<utu[0]+1<<", "<<utu[1]+1<<"]\n";
                 row=kaesi(row,utu,soutesu,sente);
