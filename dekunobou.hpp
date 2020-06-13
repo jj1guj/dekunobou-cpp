@@ -13,7 +13,7 @@
 #include<vector>*/
 using namespace std;
 
-extern int node,depth;
+extern int node,depth,node_all;
 extern double elapsed_all;
 extern vector<int>hantei1,side_pattern;
 extern vector<vector<int>>stone,out_indx,corner;
