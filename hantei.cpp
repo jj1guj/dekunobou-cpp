@@ -152,7 +152,7 @@ int soutesu,int sente,int add1,int add2){
     int basyosu=basyo.size();
     int max_basyosu=0;
     int utubasyo;
-    vector<int>utu;
+    vector<int>utu,vals;
     vector<vector<int>> simulate,simulate2,basyo2;
     vector<vector<int>> max_basyo(basyosu,vector<int>(2));
 
@@ -169,21 +169,34 @@ int soutesu,int sente,int add1,int add2){
     cout<<"depth: "<<depth<<"\n";
     vector<vector<int>>basyo_order(basyosu,vector<int>(4));
     stime=chrono::system_clock::now();
+    //1手読みによる探索の優先順位の設定
+    for(i=0;i<basyosu;i++){
+        //評価値の算出
+        vals=val_board(kaesi(row,basyo[i],soutesu,sente),add1,add2);
+        basyo_order[i]={vals[key],basyo[i][0],basyo[i][1],i};
+        node++;
+    }
+    sort(basyo_order.begin(),basyo_order.end());
+    reverse(basyo_order.begin(),basyo_order.end());
+    //優先順位の表示
+    cout<<"order: ";
+    for(i=0;i<basyosu;i++)cout<<basyo_order[i][3]+1<<" ";
+    cout<<"\n";
 
     //探索
     tokuten_max=-100000000;
     for(i=0;i<basyosu;i++){
-        bfs(kaesi(row,basyo[i],soutesu,sente),soutesu+1,sente,i,key,depth-1,add1,add2);
+        bfs(kaesi(row,{basyo_order[i][1],basyo_order[i][2]},soutesu,sente),soutesu+1,sente,i,key,depth-1,add1,add2);
         if(hantei1[i]>tokuten_max){
             max_basyosu=0;
             tokuten_max=hantei1[i];
-            max_basyo[0]=basyo[i];
+            max_basyo[0]={basyo_order[i][1],basyo_order[i][2]};
             max_basyosu=1;
         }else if(hantei1[i]==tokuten_max){
-            max_basyo[max_basyosu]=basyo[i];
+            max_basyo[max_basyosu]={basyo_order[i][1],basyo_order[i][2]};
             max_basyosu++;
         }
-        cout<<i+1<<" "<<hantei1[i]<<"\n";
+        cout<<basyo_order[i][3]+1<<" "<<hantei1[i]<<"\n";
     }
     etime=chrono::system_clock::now();
 
