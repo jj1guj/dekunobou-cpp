@@ -68,6 +68,7 @@ int hyouji_teban(vector<vector<int>> row,vector<vector<int>> basyo){
         }
 		printf("\n");
     }
+
     printf("\n");
     return 0;
 };
