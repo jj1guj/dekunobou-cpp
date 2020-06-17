@@ -24,6 +24,16 @@ bool search_zahyou(vector<vector<int>> list,int x,int y){
 	return contain;
 };
 
+bool basyo_search(int L[65][2],int x,int y){
+	int i;
+	for(i=1;i<=L[0][0];i++){
+		if(L[i][0]==x&&L[i][1]==y){
+			return true;
+		}
+	}
+	return false;
+}
+
 bool compare(vector<int>a,vector<int>b){
     return a==b;
 }
