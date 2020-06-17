@@ -34,8 +34,6 @@ vector<int>val_board(vector<vector<int>>row,int add1,int add2){
         for(j=0;j<3;j++){
             //盤面の辺の形をとってくる
             side_pattern={row[corner[i][0]][corner[i][1]],row[corner[i][0]+r_diff[i][j][0]][corner[i][1]+r_diff[i][j][1]],row[corner[i][0]+2*r_diff[i][j][0]][corner[i][1]+2*r_diff[i][j][1]]};
-            /*cout<<out[0]<<" "<<out[1]<<" ";
-            cout<<side_pattern[0]<<" "<<side_pattern[1]<<" "<<side_pattern[2]<<" ";*/
             //先手と後手でそれぞれ判定
             for(k=0;k<2;k++){
                 if(compare(side_pattern,{0,0,stone[k][0]})){
@@ -79,7 +77,6 @@ vector<int>val_board(vector<vector<int>>row,int add1,int add2){
                     out[out_indx[k][1]]-=add1+add2;
                 }
             }
-            //cout<<out[0]<<" "<<out[1]<<"\n";
         }
     }
     return out;
@@ -89,19 +86,20 @@ void bfs(vector<vector<int>> row,int soutesu,int sente,int pn,int key,int depth,
     if(depth>=0 && soutesu<60 && (pn==0||(pn>=1 && hantei1[pn]>=getmax(hantei1,pn-1)))){
         int i;
         int flg=0,val,val_key,val_max,val_min,val_key_max,eval_count,imax;
-        vector<vector<int>>simulate,eval_all,basyo;
+        int basyo[65][2],utu[2];
+        vector<vector<int>>simulate,eval_all;
         vector<int>vals(2);
-        basyo=sagasu(row,soutesu,sente);
-        int basyosu=basyo.size();
+        sagasu(row,basyo,soutesu,sente);
+        int basyosu=basyo[0][0];
         if(basyosu==0){
             if(sente==1){
-                basyo=sagasu(row,soutesu,0);
+                sagasu(row,basyo,soutesu,0);
                 sente=0;
             }else{
-                basyo=sagasu(row,soutesu,1);
+                sagasu(row,basyo,soutesu,1);
                 sente=1;
             }
-            basyosu=basyo.size();
+            basyosu=basyo[0][0];
             if(basyosu==0){
                 flg=1;
                 val_min=min(hantei1[pn],val_board(row,add1,add2)[key]);
@@ -111,7 +109,7 @@ void bfs(vector<vector<int>> row,int soutesu,int sente,int pn,int key,int depth,
 
         if(flg==0){
             eval_all.resize(basyosu,vector<int>(4));
-            for(i=0;i<basyosu;i++){
+            for(i=1;i<=basyosu;i++){
                 node++;
                 vals=val_board(kaesi(row,basyo[i],soutesu,sente),add1,add2);
                 if(soutesu%2==sente){
@@ -120,14 +118,14 @@ void bfs(vector<vector<int>> row,int soutesu,int sente,int pn,int key,int depth,
                     val=vals[1];
                 }
                 val_key=vals[key];
-                eval_all[i]={val,basyo[i][0],basyo[i][1],val_key};
+                eval_all[i-1]={val,basyo[i][0],basyo[i][1],val_key};
             }
             sort(eval_all.begin(),eval_all.end());
             reverse(eval_all.begin(),eval_all.end());
             val_max=eval_all[0][0];
             if(soutesu+1>=60||depth-1<0){
                 val_key_max=eval_all[0][3];
-                for(i=0;i<(int)eval_all.size();i++)val_key_max=max(val_key_max,eval_all[i][3]);
+                for(i=0;i<basyosu;i++)val_key_max=max(val_key_max,eval_all[i][3]);
                 val_min=min(hantei1[pn],val_key_max);
                 hantei1[pn]=val_min;
             }else{
@@ -137,7 +135,9 @@ void bfs(vector<vector<int>> row,int soutesu,int sente,int pn,int key,int depth,
                     if((val_max>=0&&eval_all[i][0]<val_max/2+val_max%2)||(val_max<0&&eval_all[i][0]<2*val_max)){
                         break;
                     }else{
-                        bfs(kaesi(row,{eval_all[i][1],eval_all[i][2]},soutesu,sente),soutesu+1,sente,pn,key,depth-1,add1,add2);
+                        utu[0]=eval_all[i][1];
+                        utu[1]=eval_all[i][2];
+                        bfs(kaesi(row,utu,soutesu,sente),soutesu+1,sente,pn,key,depth-1,add1,add2);
                     }
                 }
             }
@@ -145,15 +145,16 @@ void bfs(vector<vector<int>> row,int soutesu,int sente,int pn,int key,int depth,
     }
 }
 
-vector<int> hantei(vector<vector<int>> row,vector<vector<int>> basyo,
+vector<int> hantei(vector<vector<int>> row,int basyo[65][2],
 int soutesu,int sente,int add1,int add2){
     chrono::system_clock::time_point stime,etime;
+    int utu_h[2];
     int i,key,tokuten_max;
-    int basyosu=basyo.size();
+    int basyosu=basyo[0][0];
     int max_basyosu=0;
     int utubasyo;
     vector<int>utu,vals;
-    vector<vector<int>> simulate,simulate2,basyo2;
+    vector<vector<int>> simulate,simulate2;
     vector<vector<int>> max_basyo(basyosu,vector<int>(2));
 
     hantei1.resize(basyosu);
@@ -170,23 +171,25 @@ int soutesu,int sente,int add1,int add2){
     vector<vector<int>>basyo_order(basyosu,vector<int>(4));
     stime=chrono::system_clock::now();
     //1手読みによる探索の優先順位の設定
-    for(i=0;i<basyosu;i++){
+    for(i=1;i<=basyosu;i++){
         //評価値の算出
         vals=val_board(kaesi(row,basyo[i],soutesu,sente),add1,add2);
-        basyo_order[i]={vals[key],basyo[i][0],basyo[i][1],i};
+        basyo_order[i-1]={vals[key],basyo[i][0],basyo[i][1],i};
         node++;
     }
     sort(basyo_order.begin(),basyo_order.end());
     reverse(basyo_order.begin(),basyo_order.end());
     //優先順位の表示
     cout<<"order: ";
-    for(i=0;i<basyosu;i++)cout<<basyo_order[i][3]+1<<" ";
+    for(i=0;i<basyosu;i++)cout<<basyo_order[i][3]<<" ";
     cout<<"\n";
 
     //探索
     tokuten_max=-100000000;
     for(i=0;i<basyosu;i++){
-        bfs(kaesi(row,{basyo_order[i][1],basyo_order[i][2]},soutesu,sente),soutesu+1,sente,i,key,depth-1,add1,add2);
+        utu_h[0]=basyo_order[i][1];
+        utu_h[1]=basyo_order[i][2];
+        bfs(kaesi(row,utu_h,soutesu,sente),soutesu+1,sente,i,key,depth-1,add1,add2);
         if(hantei1[i]>tokuten_max){
             max_basyosu=0;
             tokuten_max=hantei1[i];
@@ -196,12 +199,12 @@ int soutesu,int sente,int add1,int add2){
             max_basyo[max_basyosu]={basyo_order[i][1],basyo_order[i][2]};
             max_basyosu++;
         }
-        cout<<basyo_order[i][3]+1<<" "<<hantei1[i]<<"\n";
+        cout<<basyo_order[i][3]<<" "<<hantei1[i]<<"\n";
     }
     etime=chrono::system_clock::now();
 
-    double elapsed=chrono::duration_cast<chrono::milliseconds>(etime-stime).count();
-    elapsed/=1000;
+    double elapsed=chrono::duration_cast<chrono::nanoseconds>(etime-stime).count();
+    elapsed/=1000000000;
     elapsed_all+=elapsed;
     cout<<"eval: "<<tokuten_max<<"\n";
     cout<<"node: "<<node<<"\n";

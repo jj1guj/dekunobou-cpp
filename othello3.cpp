@@ -10,8 +10,8 @@ vector<vector<int>> row_init(){
 };
 
 vector<vector<int>> nyuryoku(vector<vector<int>> row,
-vector<vector<int>> basyo,int soutesu,int sente,int teban){
-	int basyosu=basyo.size();
+int basyo[65][2],int soutesu,int sente,int teban){
+	int basyosu=basyo[0][0];
 	int basyo_utu;
 	basyo_print(basyo);
 
@@ -24,12 +24,11 @@ vector<vector<int>> basyo,int soutesu,int sente,int teban){
 		printf("Input number where you want to put again: ");
 		cin>>basyo_utu;
 	}
-
-	row=kaesi(row,basyo[basyo_utu-1],soutesu,sente);
+	row=kaesi(row,basyo[basyo_utu],soutesu,sente);
 	return row;
 };
 
-int hyouji(vector<vector<int>> row){
+void hyouji(vector<vector<int>>& row){
     int i,j;
 
     for(i=0;i<8;i++){
@@ -45,19 +44,24 @@ int hyouji(vector<vector<int>> row){
 		printf("\n");
     }
     printf("\n");
-    return 0;
 }
 
-int hyouji_teban(vector<vector<int>> row,vector<vector<int>> basyo){
-    int i,j;
-	int basyosu=basyo.size();
-    int youso=0;
+void hyouji_teban(vector<vector<int>>& row,int basyo[65][2]){
+    int i,j,k;
+    int basyosu=basyo[0][0];
+    int flg;
 
     for(i=0;i<8;i++){
         for(j=0;j<8;j++){
-            if(youso<basyosu && i==basyo[youso][0] && j==basyo[youso][1]){
-                youso+=1;
-				printf("%02d",youso);
+			flg=-1;
+			for(k=1;k<=basyosu;k++){
+				if(basyo[k][0]==i&&basyo[k][1]==j){
+					flg=k;
+					break;
+				}
+			}
+            if(flg!=-1){
+				printf("%02d",flg);
             }else if(row[i][j]==0){
                 printf("* ");
             }else if(row[i][j]==1){
@@ -70,10 +74,9 @@ int hyouji_teban(vector<vector<int>> row,vector<vector<int>> basyo){
     }
 
     printf("\n");
-    return 0;
 };
 
-vector<vector<int>> kaesi(vector<vector<int>> row,vector<int> basyo,int soutesu,int sente){
+vector<vector<int>> kaesi(vector<vector<int>> row,int basyo[2],int soutesu,int sente){
     int a,i,j;
 	int i_gyou_migi=10;
 	int i_gyou_hidari=10;

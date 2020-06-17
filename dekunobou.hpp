@@ -23,26 +23,27 @@ extern vector<vector<vector<int>>>r_diff;
 
 //othello3.cpp
 vector<vector<int>> row_init();
-vector<vector<int>> nyuryoku(vector<vector<int>> row,vector<vector<int>> basyo,int soutesu,int sente,int teban);
-int hyouji(vector<vector<int>> row);
-int hyouji_teban(vector<vector<int>> row,vector<vector<int>> basyo);
-vector<vector<int>> kaesi(vector<vector<int>> row,vector<int> basyo,int soutesu,int sente);
+vector<vector<int>> nyuryoku(vector<vector<int>> row,int basyo[65][2],int soutesu,int sente,int teban);
+void hyouji(vector<vector<int>>& row);
+void hyouji_teban(vector<vector<int>>& row,int basyo[65][2]);
+vector<vector<int>> kaesi(vector<vector<int>> row,int basyo[2],int soutesu,int sente);
 vector<int> kazu_count(vector<vector<int>>& row);
 
 //sagasu.cpp
-vector<vector<int>> sagasu(vector<vector<int>>& row, int soutesu, int sente);
-vector<vector<int>> basyo_hyouji(vector<vector<int>> basyo);
-int basyo_print(vector<vector<int>> basyo);
+void sagasu(vector<vector<int>>& row,int basyo[65][2], int soutesu, int sente);
+void basyo_hyouji(int basyo[65][2]);
+void basyo_print(int basyo[65][2]);
 
 //vector_operation.cpp
 bool search_vector(vector<vector<int>> list, vector<int> element);
 bool search_zahyou(vector<vector<int>> list,int x,int y);
+bool basyo_search(int L[65][2],int x,int y);
 bool compare(vector<int>a,vector<int>b);
 bool search_element(vector<int> list,int element);
 vector<vector<int>> append(vector<vector<int>> list);
 
 //hantei.cpp
-vector<int> hantei(vector<vector<int>> row,vector<vector<int>> basyo,int soutesu,int sente,int add1,int add2);
+vector<int> hantei(vector<vector<int>> row,int basyo[65][2],int soutesu,int sente,int add1,int add2);
 
 
 //others.cpp

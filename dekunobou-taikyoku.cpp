@@ -11,13 +11,14 @@ int main(int argv,char **argc){
     }
 
 	int teban,teban_first;
-    vector<vector<int>> row,basyo;
+    vector<vector<int>> row;
 	vector<int> kazu,utu;
 	chrono::system_clock::time_point start,end;
 	int sente=1;
 	int gote=0;
 	int soutesu=1;
 	int change_kaisu=0;
+    int basyo[65][2],basyosu,utu_in[2];
 	char change_char;
 	
 	srand(time(NULL));
@@ -34,7 +35,6 @@ int main(int argv,char **argc){
     row=row_init();
 
     while(soutesu<60){
-        vector<vector<int>> basyo;
         kazu=kazu_count(row);
         soutesu=kazu[0]+kazu[1]-3;
         if(soutesu==1){
@@ -43,11 +43,14 @@ int main(int argv,char **argc){
             printf("%d turn\n",soutesu);
         }
         printf("sente:%d vs %d:gote\n",kazu[0],kazu[1]);
-        basyo=sagasu(row,soutesu,sente);
-        sort(basyo.begin(),basyo.end());
+        sagasu(row,basyo,soutesu,sente);
+        //sort(basyo+1,basyo+basyo[0][0]+1);
+        basyosu=basyo[0][0];
         if(soutesu%2==teban){
+            //basyo=sagasu(row,soutesu,sente);
             hyouji_teban(row,basyo);
-            if (basyo.size()==0){
+            //hyouji(row);
+            if (basyosu==0){
                 scanf("Because there's not place you can put, move to CPU's turn[Y/n]%c",&change_char);
                 change_kaisu+=1;
                 if(sente==1){
@@ -66,8 +69,9 @@ int main(int argv,char **argc){
                 break;
             }
         }else{
+            //basyo=sagasu(row,soutesu,sente);
             hyouji_teban(row,basyo);
-            if(basyo.size()==0){
+            if(basyosu==0){
                 change_kaisu+=1;
                 if(sente==1){
                     sente=0;
@@ -85,7 +89,9 @@ int main(int argv,char **argc){
                 }
                 node_all+=node;
                 cout<<"["<<utu[0]+1<<", "<<utu[1]+1<<"]\n";
-                row=kaesi(row,utu,soutesu,sente);
+                utu_in[0]=utu[0];
+                utu_in[1]=utu[1];
+                row=kaesi(row,utu_in,soutesu,sente);
             }
         }
 
